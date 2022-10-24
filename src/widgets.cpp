@@ -13,7 +13,6 @@ bool Widgets::Button::getIfClicked(int mousex, int mousey)
 {
     if (  mousex >= x && mousex <= x + w && mousey >= y && mousey <= y + h )
     {
-        std::cout << "Clicked" << std::endl;
         return true;
     }
 
