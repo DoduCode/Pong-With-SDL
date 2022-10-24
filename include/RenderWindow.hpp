@@ -19,7 +19,7 @@ class RenderWindow
         void clear();
         void render(Entity& p_entity);
         void renderText(Text& p_text);
-        void renderButton(Widgets::Button p_button);
+        void renderButton(Widgets::Button& p_button);
         void display();
         void cleanUp();
 };
