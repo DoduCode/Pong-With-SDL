@@ -28,10 +28,11 @@ int main(int argc, char* args[])
 	Entity ball(int(winw / 2), int((winh - 10) / 2), 10, 10);
 	Entity line(int((winw - 10) / 2), 0, 10, 500);
 
-	Text player1score("00", 20, 0, 50, 50);
-	Text player2score("00", int(winw - 60), 0, 50, 50);
+	Text player1score("res/gfx/OpenSans-Regular.ttf", 75, "00", 52, 52, 52, 20, 0, 50, 50);
+	Text player2score("res/gfx/OpenSans-Regular.ttf", 75, "00", 52, 52, 52, int(winw - 60), 0, 50, 50);
 
-	Widgets::Button startButton("Start", "white", "black", 450, 250, 200, 100);
+	Widgets::Button startButton("Start", "white", 1, "black", int((winw - 200) / 2), int((winh - 100) / 2), 200, 100);
+	Text startText("res/gfx/OpenSans-Regular.ttf", 50, "Click 'Start' to begin the game", 255, 255, 255, 5, 5, 100, 20);
 
 	bool gameRunning = true;
 
@@ -53,7 +54,7 @@ int main(int argc, char* args[])
 			if (event.type == SDL_QUIT)
 				gameRunning = false;
 
-			if (event.type == SDL_KEYDOWN && (!winScreen || !startScreen))
+			if (event.type == SDL_KEYDOWN && (!winScreen && !startScreen))
 
 			{
 				const Uint8 *state = SDL_GetKeyboardState(NULL);
@@ -100,15 +101,17 @@ int main(int argc, char* args[])
 				if (event.button.button == SDL_BUTTON_LEFT)
 				{
 					SDL_GetMouseState(&mouseX, &mouseY);
-
-					std::cout << "Mouse X: " << mouseX << std::endl;
-					std::cout << "Mouse Y: " << mouseY << std::endl;
+					if (startScreen)
+					{
+						if (startButton.getIfClicked(mouseX, mouseY))
+							startScreen = false;
+					}
 				}
 			}
 		}
 
 		// ball movement
-		if (!startScreen || !winScreen)
+		if (!startScreen && !winScreen)
 		{
 			if (up == false)
 			{
@@ -163,13 +166,22 @@ int main(int argc, char* args[])
 
 		window.clear();
 
-		window.render(player1);
-		window.render(player2);
-		window.render(ball);
-		window.render(line);
+		if (!startScreen) 
+		{
+			window.render(player1);
+			window.render(player2);
+			window.render(ball);
+			window.render(line);
 
-		window.renderText(player1score);
-		window.renderText(player2score);
+			window.renderText(player1score);
+			window.renderText(player2score);
+		}
+
+		if (startScreen)
+		{
+			window.renderText(startText);
+			window.renderButton(startButton);
+		}
 
 		window.display();
 
