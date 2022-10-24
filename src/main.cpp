@@ -7,6 +7,7 @@
 #include "RenderWindow.hpp"
 #include "Text.hpp"
 #include "Widgets.hpp"
+#include "Utils.hpp"
 
 int main(int argc, char* args[])
 {
@@ -27,12 +28,15 @@ int main(int argc, char* args[])
 	Entity player2(winw - 15, int(winh - 300), 5, 100);
 	Entity ball(int(winw / 2), int((winh - 10) / 2), 10, 10);
 	Entity line(int((winw - 10) / 2), 0, 10, 500);
-
+	
 	Text player1score("res/gfx/OpenSans-Regular.ttf", 75, "00", 52, 52, 52, 20, 0, 50, 50);
 	Text player2score("res/gfx/OpenSans-Regular.ttf", 75, "00", 52, 52, 52, int(winw - 60), 0, 50, 50);
 
 	Widgets::Button startButton("Start", "white", 1, "black", int((winw - 200) / 2), int((winh - 100) / 2), 200, 100);
 	Text startText("res/gfx/OpenSans-Regular.ttf", 50, "Click 'Start' to begin the game", 255, 255, 255, 5, 5, 100, 20);
+
+	Widgets::Button newGameButton("New Game", "white", 1, "black", int((winw - 400) / 2), int((winh - 100) / 2), 400, 100);
+	Text winPlayer("res/gfx/OpenSans-Regular.ttf", 50, "Player Wins", 255, 255, 255, int(winw - 200) / 2, 5, 200, 100);
 
 	bool gameRunning = true;
 
@@ -47,67 +51,98 @@ int main(int argc, char* args[])
 
 	SDL_Event event;
 
+	const float timeStep = 0.01f;
+	float accumulator = 0.0f;
+	float currentTime = utils::hireTimeInSeconds();
+
 	while (gameRunning)
 	{
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type == SDL_QUIT)
-				gameRunning = false;
+		int startTicks = SDL_GetTicks();
 
-			if (event.type == SDL_KEYDOWN && (!winScreen && !startScreen))
+		float newTime = utils::hireTimeInSeconds();
+		float frameTime = newTime - currentTime;
 
-			{
-				const Uint8 *state = SDL_GetKeyboardState(NULL);
+		if (frameTime > 0.25f)
+			frameTime = 0.25f;
 
-				if (state[SDL_SCANCODE_S])
-				{
-					if (player1.getY() >= winh - 100)
-						player1.setY(winh - 100);
-
-					else
-						player1.setY(player1.getY() + 10);
-				}
-				
-				else if (state[SDL_SCANCODE_W])
-				{
-					if (player1.getY() <= 0)
-						player1.setY(0);
-
-					else
-						player1.setY(player1.getY() - 10);
-				}
-
-				if (state[SDL_SCANCODE_DOWN])
-				{
-					if (player2.getY() >= winh - 100)
-						player2.setY(winh - 100);
-
-					else
-						player2.setY(player2.getY() + 10);
-				}
-				
-				else if (state[SDL_SCANCODE_UP])
-				{
-					if (player2.getY() <= 0)
-						player2.setY(0);
-
-					else
-						player2.setY(player2.getY() - 10);
-				}
-			}
+		currentTime = newTime;
+		accumulator += frameTime;
 		
-			if (event.type == SDL_MOUSEBUTTONUP)
+		while (accumulator >= timeStep)
+		{
+			while (SDL_PollEvent(&event))
 			{
-				if (event.button.button == SDL_BUTTON_LEFT)
+				if (event.type == SDL_QUIT)
+					gameRunning = false;
+
+				if (event.type == SDL_KEYDOWN && (!winScreen && !startScreen))
 				{
-					SDL_GetMouseState(&mouseX, &mouseY);
-					if (startScreen)
+					const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+					if (state[SDL_SCANCODE_S])
 					{
-						if (startButton.getIfClicked(mouseX, mouseY))
-							startScreen = false;
+						if (player1.getY() >= winh - 100)
+							player1.setY(winh - 100);
+
+						else
+							player1.setY(player1.getY() + 10);
+					}
+					
+					else if (state[SDL_SCANCODE_W])
+					{
+						if (player1.getY() <= 0)
+							player1.setY(0);
+
+						else
+							player1.setY(player1.getY() - 10);
+					}
+
+					if (state[SDL_SCANCODE_DOWN])
+					{
+						if (player2.getY() >= winh - 100)
+							player2.setY(winh - 100);
+
+						else
+							player2.setY(player2.getY() + 10);
+					}
+					
+					else if (state[SDL_SCANCODE_UP])
+					{
+						if (player2.getY() <= 0)
+							player2.setY(0);
+
+						else
+							player2.setY(player2.getY() - 10);
+					}
+				}
+			
+				if (event.type == SDL_MOUSEBUTTONUP)
+				{
+					if (event.button.button == SDL_BUTTON_LEFT)
+					{
+						SDL_GetMouseState(&mouseX, &mouseY);
+						if (startScreen)
+						{
+							if (startButton.getIfClicked(mouseX, mouseY))
+								startScreen = false;
+						}
+					}
+
+					if (winScreen)
+					{
+						if (newGameButton.getIfClicked(mouseX, mouseY))
+						{
+							player1.points = 0;
+							player2.points = 0;
+							ball.setX(int(winw / 2));
+							ball.setY(int((winh - 10) / 2));
+							winScreen = false;
+						}
 					}
 				}
 			}
+		
+			accumulator -= timeStep;
 		}
 
 		// ball movement
@@ -115,21 +150,21 @@ int main(int argc, char* args[])
 		{
 			if (up == false)
 			{
-				ball.setY(ball.getY() + 1);
+				ball.setY(ball.getY() + 5);
 				if (ball.getY() >= winh - 10)
 					up = true;
 			}
 
 			if (up == true)
 			{
-				ball.setY(ball.getY() - 1);
+				ball.setY(ball.getY() - 5);
 				if (ball.getY() <= 0)
 					up = false;
 			}
 
 			if (right == false)
 			{
-				ball.setX(ball.getX() + 1);
+				ball.setX(ball.getX() + 5);
 				if (ball.getY() >= player2.getY() && ball.getY() <= player2.getY() + 100 && ball.getX() == player2.getX() - 10)
 				{
 					right = true;
@@ -144,7 +179,7 @@ int main(int argc, char* args[])
 
 			if (right == true)
 			{
-				ball.setX(ball.getX() - 1);
+				ball.setX(ball.getX() - 5);
 				if (ball.getY() >= player1.getY() && ball.getY() <= player1.getY() + 100 && ball.getX() == player1.getX() + 5)
 				{	
 					right = false;
@@ -161,12 +196,27 @@ int main(int argc, char* args[])
 		if (player1.points == 10 || player2.points == 10)
 			winScreen = true;
 
-		player1score.setText(std::to_string(player1.points).c_str());
-		player2score.setText(std::to_string(player2.points).c_str());
+		const char* p1score = std::to_string(player1.points).c_str();
+		const char* p2score = std::to_string(player2.points).c_str();
+
+		std::cout << "Player 1: " << p1score << std::endl;
+		std::cout << "Player 2: " << p2score << std::endl;
+
+		player1score.setText(p1score);
+		player2score.setText(p2score);
+
+		// std::cout << "Player 1: " << player1score.getText() << std::endl;
+		// std::cout << "Player 2: " << player2score.getText() << std::endl;
 
 		window.clear();
 
-		if (!startScreen) 
+		if (startScreen)
+		{
+			window.renderText(startText);
+			window.renderButton(startButton);
+		}
+
+		if (!startScreen && !winScreen) 
 		{
 			window.render(player1);
 			window.render(player2);
@@ -177,15 +227,24 @@ int main(int argc, char* args[])
 			window.renderText(player2score);
 		}
 
-		if (startScreen)
+		if (winScreen)
 		{
-			window.renderText(startText);
-			window.renderButton(startButton);
-		}
+			if (player1.points == 10)
+				winPlayer.setText("Player 1 Wins");
+
+			else
+				winPlayer.setText("Player 2 Wins");
+
+			window.renderText(winPlayer);
+			window.renderButton(newGameButton);
+		} 
 
 		window.display();
 
-		SDL_Delay(int(1000/500)); 
+		int frameTicks = SDL_GetTicks() - startTicks;
+
+		if (frameTicks < 1000 / window.getRefreshRate() )
+			SDL_Delay(1000 / window.getRefreshRate() - frameTicks); 
 	}
 
 	window.cleanUp();
