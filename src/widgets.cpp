@@ -5,14 +5,17 @@
 #include "Widgets.hpp"
 #include "Text.hpp"
 
-Widgets::Button::Button(const char* p_text, const char* p_borderc, const char* p_bg, int p_x, int p_y, int p_w, int p_h)
-:text(p_text), border(p_borderc), bg(p_bg), x(p_x), y(p_y), w(p_w), h(p_h)
+Widgets::Button::Button(const char *p_text, const char *p_borderc, int p_borderLength, const char *p_bg, int p_x, int p_y, int p_w, int p_h)
+:text(p_text), border(p_borderc), borderLength(p_borderLength), bg(p_bg), x(p_x), y(p_y), w(p_w), h(p_h)
 {}
 
 bool Widgets::Button::getIfClicked(int mousex, int mousey)
 {
     if (  mousex >= x && mousex <= x + w && mousey >= y && mousey <= y + h )
+    {
+        std::cout << "Clicked" << std::endl;
         return true;
+    }
 
     else
         return false;
@@ -26,6 +29,11 @@ const char* Widgets::Button::getText()
 const char* Widgets::Button::getBorder()
 {
     return border;
+}
+
+int Widgets::Button::getBorderLength()
+{
+    return borderLength;
 }
 
 const char* Widgets::Button::getBG()

@@ -11,16 +11,18 @@ namespace Widgets
         private:
             const char* text;
             const char* border;
+            int borderLength;
             const char* bg;
             int x, y, w, h;
 
         public:
-            Button(const char* p_text, const char* p_borderc, const char* p_bg, int p_x, int p_y, int p_w, int p_h);
+            Button(const char* p_text, const char* p_borderc, int p_borderLength, const char* p_bg, int p_x, int p_y, int p_w, int p_h);
 
             bool getIfClicked(int mousex, int mousey);
 
             const char* getText();
             const char* getBorder();
+            int getBorderLength();
             const char* getBG();
 
             int getX();
@@ -29,5 +31,4 @@ namespace Widgets
             int getH();
 
     };
-
 } // namespace Widgets
