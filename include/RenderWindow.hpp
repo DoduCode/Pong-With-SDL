@@ -16,6 +16,9 @@ class RenderWindow
 
     public:
         RenderWindow(const char* title, int w, int h);
+        
+        int getRefreshRate();
+        
         void clear();
         void render(Entity& p_entity);
         void renderText(Text& p_text);

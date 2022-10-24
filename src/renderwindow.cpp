@@ -19,6 +19,17 @@ RenderWindow::RenderWindow(const char* title, int w, int h)
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+int RenderWindow::getRefreshRate()
+{
+	int displayIndex = SDL_GetWindowDisplayIndex( window );
+
+	SDL_DisplayMode mode;
+
+	SDL_GetDisplayMode(displayIndex, 0, &mode);
+
+	return mode.refresh_rate;
+}
+
 void RenderWindow::clear()
 {
 	SDL_RenderClear(renderer);
@@ -98,8 +109,8 @@ void RenderWindow::renderButton(Widgets::Button &p_button)
 	int winh = 500;
 
 	SDL_Rect dstrect; 
-	dstrect.x = int((winw - 110) / 2);
-	dstrect.y = int((winh - 40 * 2) / 2);
+	dstrect.x = int((winw - texW) / 2);
+	dstrect.y = int((winh - texH) / 2);
 	dstrect.w = texW;
 	dstrect.h = texH;
 
