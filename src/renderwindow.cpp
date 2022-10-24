@@ -38,17 +38,21 @@ void RenderWindow::render(Entity& p_entity)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-void RenderWindow::renderText(Text& p_text)
+void RenderWindow::renderText(Text &p_text)
 {
-	TTF_Font* Sans = TTF_OpenFont("res/gfx/OpenSans-Regular.ttf", 75);
-	SDL_Color color = {28, 28, 28, 255};
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, p_text.getText(), color); 
+	TTF_Font* Font = TTF_OpenFont(p_text.getFontPath(), p_text.getFontSize());
+	SDL_Color color = {p_text.r, p_text.g, p_text.b, 255};
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Font, p_text.getText(), color); 
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
 	int texW = p_text.w;
 	int texH = p_text.h;
 	SDL_QueryTexture(Message, NULL, NULL, &texW, &texH);
-	SDL_Rect dstrect = { p_text.x, p_text.y, texW, texH };
+	SDL_Rect dstrect; 
+	dstrect.x = p_text.x;
+	dstrect.y = p_text.y;
+	dstrect.w = texW;
+	dstrect.h = texH;
 
 		
 	SDL_RenderCopy(renderer, Message, NULL, &dstrect);
@@ -56,14 +60,54 @@ void RenderWindow::renderText(Text& p_text)
 	SDL_DestroyTexture(Message);
 }
 
-void RenderWindow::renderButton(Widgets::Button p_button)
+void RenderWindow::renderButton(Widgets::Button &p_button)
 {
-	SDL_Color = color;
+    SDL_Rect rrect;
+    rrect.x = p_button.getX();
+	rrect.y = p_button.getY();
+    rrect.w = p_button.getW();
+    rrect.h = p_button.getH();
 
-	if (p_button == 'white')
-		color = {255, 255, 255}
+    SDL_Rect fillrect;
+    fillrect.x = p_button.getX() + p_button.getBorderLength();
+	fillrect.y = p_button.getY() + p_button.getBorderLength();
+    fillrect.w = p_button.getW() - int(p_button.getBorderLength() * 2);
+    fillrect.h = p_button.getH() - int(p_button.getBorderLength() * 2);
 
-		
+	// Border Rect
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &rrect);
+	SDL_RenderFillRect(renderer, &rrect);
+
+	// Fill Rect 
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderDrawRect(renderer, &fillrect);
+	SDL_RenderFillRect(renderer, &fillrect);
+
+	// Text
+	TTF_Font* Sans = TTF_OpenFont("res/gfx/OpenSans-Regular.ttf", 50);
+	SDL_Color color = {255, 255, 255, 255};
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, p_button.getText(), color); 
+	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+	int texW = p_button.getW();
+	int texH = p_button.getH();
+	SDL_QueryTexture(Message, NULL, NULL, &texW, &texH);
+
+	int winw = 900;
+	int winh = 500;
+
+	SDL_Rect dstrect; 
+	dstrect.x = int((winw - 110) / 2);
+	dstrect.y = int((winh - 40 * 2) / 2);
+	dstrect.w = texW;
+	dstrect.h = texH;
+
+	SDL_RenderCopy(renderer, Message, NULL, &dstrect);
+	SDL_FreeSurface(surfaceMessage);
+	SDL_DestroyTexture(Message);
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
 void RenderWindow::display()
