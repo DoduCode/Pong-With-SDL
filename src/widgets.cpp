@@ -12,10 +12,7 @@ Widgets::Button::Button(const char *p_text, const char *p_borderc, int p_borderL
 bool Widgets::Button::getIfClicked(int mousex, int mousey)
 {
     if (  mousex >= x && mousex <= x + w && mousey >= y && mousey <= y + h )
-    {
-        std::cout << "Clicked" << std::endl;
         return true;
-    }
 
     else
         return false;
