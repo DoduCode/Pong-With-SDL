@@ -1,1 +1,5 @@
-s
+/entity.o
+/main.o
+/renderwindow.o
+/text.o
+/widgets.o
