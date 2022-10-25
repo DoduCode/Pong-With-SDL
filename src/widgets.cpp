@@ -12,10 +12,7 @@ Widgets::Button::Button(const char *p_text, const char *p_borderc, int p_borderL
 bool Widgets::Button::getIfClicked(int mousex, int mousey)
 {
     if (  mousex >= x && mousex <= x + w && mousey >= y && mousey <= y + h )
-<<<<<<< HEAD
     {
-=======
->>>>>>> 19a27a2593ff1e0bdf7b9c5d788c63e755ad9c15
         return true;
 
     else
