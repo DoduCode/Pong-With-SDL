@@ -14,6 +14,7 @@ bool Widgets::Button::getIfClicked(int mousex, int mousey)
     if (  mousex >= x && mousex <= x + w && mousey >= y && mousey <= y + h )
     {
         return true;
+    }
 
     else
         return false;

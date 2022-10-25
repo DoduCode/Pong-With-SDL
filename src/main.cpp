@@ -134,6 +134,10 @@ int main(int argc, char* args[])
 						{
 							player1.points = 0;
 							player2.points = 0;
+							player1.setX(10);
+							player1.setY(int(winh - 300));
+							player2.setX(winw - 15);
+							player2.setY(int(winh - 300));
 							ball.setX(int(winw / 2));
 							ball.setY(int((winh - 10) / 2));
 							winScreen = false;
@@ -199,14 +203,8 @@ int main(int argc, char* args[])
 		const char* p1score = std::to_string(player1.points).c_str();
 		const char* p2score = std::to_string(player2.points).c_str();
 
-		std::cout << "Player 1: " << p1score << std::endl;
-		std::cout << "Player 2: " << p2score << std::endl;
-
 		player1score.setText(p1score);
 		player2score.setText(p2score);
-
-		// std::cout << "Player 1: " << player1score.getText() << std::endl;
-		// std::cout << "Player 2: " << player2score.getText() << std::endl;
 
 		window.clear();
 
