@@ -69,6 +69,7 @@ void RenderWindow::renderText(Text &p_text)
 	SDL_RenderCopy(renderer, Message, NULL, &dstrect);
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(Message);
+	TTF_CloseFont(Font);
 }
 
 void RenderWindow::renderButton(Widgets::Button &p_button)
@@ -106,17 +107,21 @@ void RenderWindow::renderButton(Widgets::Button &p_button)
 	SDL_QueryTexture(Message, NULL, NULL, &texW, &texH);
 
 	int winw = 900;
-	int winh = 500;
+	// int winh = 500;
 
 	SDL_Rect dstrect; 
 	dstrect.x = int((winw - texW) / 2);
-	dstrect.y = int((winh - texH) / 2);
+	dstrect.y = p_button.getY();
 	dstrect.w = texW;
 	dstrect.h = texH;
+
+	SDL_SetRenderDrawColor(renderer, 25, 55, 142, 255);
+    SDL_RenderDrawRect(renderer, &dstrect);
 
 	SDL_RenderCopy(renderer, Message, NULL, &dstrect);
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(Message);
+	TTF_CloseFont(Sans);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
@@ -128,5 +133,9 @@ void RenderWindow::display()
 
 void RenderWindow::cleanUp()
 {
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	
+	window = NULL;
+	renderer = NULL;
 }
