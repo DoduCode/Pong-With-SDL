@@ -47,11 +47,8 @@ int main(int argc, char* args[])
 	Mix_Chunk* bounce;
 	Mix_Chunk* score;
 
-	track = Mix_LoadMUS("res/tracks/track-01.ogg");
-	int result = Mix_PlayMusic( track, -1 );
-
-	bounce = Mix_LoadWAV("res/sfx/bounce.ogg");
-	score = Mix_LoadWAV("res/sfx/score.ogg");
+	bounce = Mix_LoadWAV("res/sfx/bounce.wav");
+	score = Mix_LoadWAV("res/sfx/score.wav");
 
 	bool gameRunning = true;
 
@@ -203,6 +200,7 @@ int main(int argc, char* args[])
 				ball.setX(ball.getX() + 5);
 				if (ball.getY() >= player2.getY() && ball.getY() <= player2.getY() + 100 && ball.getX() == player2.getX() - 10)
 				{
+					Mix_PlayChannel(1, bounce, 0);
 					right = true;
 				}
 
@@ -219,6 +217,7 @@ int main(int argc, char* args[])
 				ball.setX(ball.getX() - 5);
 				if (ball.getY() >= player1.getY() && ball.getY() <= player1.getY() + 100 && ball.getX() == player1.getX() + 5)
 				{	
+					Mix_PlayChannel(1, bounce, 0);
 					right = false;
 				}
 
@@ -292,8 +291,6 @@ int main(int argc, char* args[])
 	}
 
 	window.cleanUp();
-
-	Mix_FreeMusic(track);
 
 	Mix_FreeChunk(bounce);
 	Mix_FreeChunk(score);
