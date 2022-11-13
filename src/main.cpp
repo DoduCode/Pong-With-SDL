@@ -44,8 +44,6 @@ int main(int argc, char* args[])
 	Widgets::Button newGameButton("New Game", "white", 1, "black", int((winw - 400) / 2), int((winh - 100) / 2), 400, 100);
 	Text winPlayer("res/gfx/OpenSans-Regular.ttf", 50, "Player Wins", 255, 255, 255, int(winw - 200) / 2, 5, 200, 100);
 
-	Mix_Music* track;
-
 	Mix_Chunk* bounce;
 	Mix_Chunk* score;
 
